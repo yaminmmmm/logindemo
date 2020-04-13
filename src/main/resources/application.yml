@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/login_service?useUnicode=true&serverTimezone=Hongkong&characterEncoding=utf-8
+    username: root
+    password: admin
+    hikari:
+      connection-test-query: SELECT 1 FROM DUAL
+      connection-timeout: 30000
+      maximum-pool-size: 20
+      max-lifetime: 1800000
+      minimum-idle: 5
+      connection-init-sql: SET NAMES utf8mb4
+  redis:
+    port: 6379
+    host: localhost
+    database: 0
+    password: 123456
+
+
+#mybatis
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+#redis
+redis:
+  #redis统一前缀
+  prefix: TEST
+  #redis分隔符
+  separator: ':'
