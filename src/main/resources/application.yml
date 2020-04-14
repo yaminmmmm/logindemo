@@ -15,7 +15,6 @@ spring:
     port: 6379
     host: localhost
     database: 0
-    password: 123456
 
 
 #mybatis
@@ -28,6 +27,6 @@ mybatis:
 #redis
 redis:
   #redis统一前缀
-  prefix: TEST
+  prefix: USER
   #redis分隔符
   separator: ':'

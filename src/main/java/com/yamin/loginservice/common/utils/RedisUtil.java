@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * TODO
  */
 @Component
-public class RedisUtil {
+public final class RedisUtil {
 
 
     @Resource
@@ -59,6 +59,7 @@ public class RedisUtil {
             redisTemplate.opsForValue().set(this.prefix + this.separator + key, value, expireTime, TimeUnit.SECONDS);
             result = true;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ProxyRedisException("缓存:" + key + "发生异常");
         }
         return result;
@@ -70,7 +71,11 @@ public class RedisUtil {
      * @return
      */
     public Object get(final String key) {
+
+
+
         return redisTemplate.opsForValue().get(this.prefix + this.separator + key);
+
     }
 
     /**
