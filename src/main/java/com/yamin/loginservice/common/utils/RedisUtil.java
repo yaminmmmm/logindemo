@@ -1,8 +1,10 @@
 package com.yamin.loginservice.common.utils;
 
 import com.yamin.loginservice.common.exceptions.ProxyRedisException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -14,10 +16,10 @@ import java.util.concurrent.TimeUnit;
  * TODO
  */
 @Component
-public final class RedisUtil {
+public class RedisUtil {
 
 
-    @Resource
+    @Autowired
     private RedisTemplate<Serializable, Object> redisTemplate;
 
     @Value("${redis.prefix}")
@@ -59,7 +61,6 @@ public final class RedisUtil {
             redisTemplate.opsForValue().set(this.prefix + this.separator + key, value, expireTime, TimeUnit.SECONDS);
             result = true;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new ProxyRedisException("缓存:" + key + "发生异常");
         }
         return result;
@@ -71,11 +72,7 @@ public final class RedisUtil {
      * @return
      */
     public Object get(final String key) {
-
-
-
         return redisTemplate.opsForValue().get(this.prefix + this.separator + key);
-
     }
 
     /**
@@ -106,5 +103,15 @@ public final class RedisUtil {
         for (String key : keys) {
             remove(this.prefix + this.separator + key);
         }
+    }
+
+
+    public ValueOperations<Serializable, Object> getOpsValue(){
+        ValueOperations<Serializable, Object> opsForValue = redisTemplate.opsForValue();
+        return opsForValue;
+    }
+
+    public RedisTemplate getRedisTemplate(){
+        return this.redisTemplate;
     }
 }

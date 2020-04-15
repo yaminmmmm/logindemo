@@ -13,19 +13,19 @@ import java.io.Serializable;
 @Configuration
 public class RedisConfig {
 
+
     @Autowired
     private RedisTemplate redisTemplate;
 
     @Bean
-    public RedisTemplate<Serializable,Object> stringSerializableRedisTemplate(){
+    public RedisTemplate<Serializable, Object> stringSerializableRedisTemplate() {
 
         RedisSerializer<String> stringSerializer = new StringRedisSerializer();
 
-        RedisSerializer<Object> jsonSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        RedisSerializer<Object> jsonSerializer = new Jackson2JsonRedisSerializer<Object>(Object.class);
 
-        redisTemplate.setValueSerializer(jsonSerializer);
         redisTemplate.setKeySerializer(stringSerializer);
-
+        redisTemplate.setValueSerializer(jsonSerializer);
 
 
         return redisTemplate;

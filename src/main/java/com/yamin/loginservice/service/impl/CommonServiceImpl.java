@@ -1,10 +1,8 @@
 package com.yamin.loginservice.service.impl;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.yamin.loginservice.common.domain.ApiResult;
 import com.yamin.loginservice.common.domain.ApiResultCode;
 import com.yamin.loginservice.common.exceptions.ProxyRedisException;
-import com.yamin.loginservice.common.utils.GlobalAttr;
 import com.yamin.loginservice.common.utils.RedisUtil;
 import com.yamin.loginservice.orm.dto.UserDto;
 import com.yamin.loginservice.orm.entity.User;
@@ -30,13 +28,12 @@ public class CommonServiceImpl implements CommonService {
 
         //todo 添加 shiro 解密
         User user = userDAO.selectByUsername(userDto.getUsername());
-        if (user != null && userDto.getPassword().equals(user.getPassword())) {
+        if (userDto.getPassword().equals(user.getPassword())) {
             //创建唯一UUID作为token保存到缓存中
             String uuid = UUID.randomUUID().toString();
-            String token = user.getUsername() + ":" + uuid;
+            String token = user.getUsername() + uuid;
             try {
-
-                boolean result = redisUtil.set(token, user, GlobalAttr.EXPIRE_TIME.ONE_WEEK);
+                boolean result = redisUtil.set(token, user);
                 if (result) {
                     return apiResult.set("token", token);
                 } else {

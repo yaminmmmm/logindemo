@@ -27,6 +27,6 @@ mybatis:
 #redis
 redis:
   #redis统一前缀
-  prefix: USER
+  prefix: TEST
   #redis分隔符
   separator: ':'
