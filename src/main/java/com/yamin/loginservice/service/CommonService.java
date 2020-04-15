@@ -8,4 +8,6 @@ public interface CommonService {
     ApiResult loginByPassword(UserDto userDto);
 
     ApiResult loginByPhoneNumber(UserDto userDto);
+
+    ApiResult register(UserDto userDto);
 }

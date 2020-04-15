@@ -3,6 +3,7 @@ package com.yamin.loginservice.controller;
 import com.yamin.loginservice.common.domain.ApiResult;
 import com.yamin.loginservice.common.domain.ApiResultCode;
 import com.yamin.loginservice.orm.dto.UserDto;
+import com.yamin.loginservice.orm.entity.User;
 import com.yamin.loginservice.service.CommonService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,7 +21,7 @@ public class CommonController {
     private CommonService commonService;
 
 
-    @ApiOperation(value = "登录操作",tags = "登录接口")
+    @ApiOperation(value = "用户登录操作",tags = "登录接口")
     @PostMapping("/login")
     public ApiResult login(@RequestBody UserDto userDto){
         if (userDto.getPassword() == null && userDto.getUsername() == null){
@@ -28,5 +29,14 @@ public class CommonController {
         }
         ApiResult result = commonService.loginByPassword(userDto);
         return result;
+    }
+
+    @ApiOperation(value = "用户注册操作",tags = "注册接口")
+    @PostMapping("/register")
+    public ApiResult register(@RequestBody UserDto userDto){
+        if (userDto.getPassword() == null && userDto.getUsername() == null){
+            return new ApiResult(ApiResultCode.REGISTER_FAIL);
+        }
+        return commonService.register(userDto);
     }
 }

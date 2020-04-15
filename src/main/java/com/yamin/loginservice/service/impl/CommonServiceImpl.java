@@ -12,10 +12,14 @@ import com.yamin.loginservice.service.CommonService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -72,5 +76,35 @@ public class CommonServiceImpl implements CommonService {
 
         //todo 通过手机验证码登录
         return null;
+    }
+
+    @Override
+    @Transactional
+    public ApiResult register(UserDto userDto) {
+        User user = new User();
+
+        //todo 可以改造成使用redis判断用户名是否已存在
+        User userIsExist = userDAO.selectByUsername(userDto.getUsername());
+        if (userIsExist != null) {
+            return new ApiResult(ApiResultCode.REGISTER_USERNAME_IS_EXIST);
+        }
+        //通过shiro使用md5加密用户密码
+        String salt = new SecureRandomNumberGenerator().nextBytes().toString();
+        int times = 2;
+        String algorithName = "md5";
+        String encodePassword = new SimpleHash(algorithName, userDto.getPassword(), salt, times).toString();
+
+        user.setPhone(userDto.getPhoneNumber());
+        user.setSalt(salt);
+        user.setPassword(encodePassword);
+        user.setUsername(userDto.getUsername());
+        user.setUpdateTime(new Date());
+        user.setCreateTime(new Date());
+        int effected = userDAO.insertSelective(user);
+        if (effected <= 0) {
+            return new ApiResult(ApiResultCode.SYSTEM_ERROR);
+        }
+
+        return new ApiResult();
     }
 }
