@@ -6,4 +6,6 @@ import com.yamin.loginservice.orm.dto.UserDto;
 
 public interface CommonService {
     ApiResult loginByPassword(UserDto userDto);
+
+    ApiResult loginByPhoneNumber(UserDto userDto);
 }
