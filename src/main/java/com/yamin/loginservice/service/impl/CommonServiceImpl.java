@@ -8,6 +8,11 @@ import com.yamin.loginservice.orm.dto.UserDto;
 import com.yamin.loginservice.orm.entity.User;
 import com.yamin.loginservice.orm.mapper.UserDAO;
 import com.yamin.loginservice.service.CommonService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,27 +29,38 @@ public class CommonServiceImpl implements CommonService {
 
     @Override
     public ApiResult loginByPassword(UserDto userDto) {
+
+
         ApiResult apiResult = new ApiResult();
 
-        //todo 添加 shiro 解密
-        User user = userDAO.selectByUsername(userDto.getUsername());
-        if (userDto.getPassword().equals(user.getPassword())) {
-            //创建唯一UUID作为token保存到缓存中
+        Subject subject = SecurityUtils.getSubject();
+        UsernamePasswordToken shiroToken = new UsernamePasswordToken(userDto.getUsername(), userDto.getPassword());
+        User user = null;
+        try {
+            subject.login(shiroToken);
+            user = userDAO.selectByUsername(userDto.getUsername());
+
             String uuid = UUID.randomUUID().toString();
-            String token = user.getUsername() + uuid;
+            String loginToken = user.getUsername() + uuid;
             try {
-                boolean result = redisUtil.set(token, user);
+                boolean result = redisUtil.set(loginToken, user);
                 if (result) {
-                    return apiResult.set("token", token);
-                } else {
-                    return apiResult.setCode(ApiResultCode.SYSTEM_ERROR.getCode()).setMessage(ApiResultCode.SYSTEM_ERROR.getMessage());
+                    apiResult.set("token",loginToken);
+                }else {
+                    apiResult.setCodeAndMessage(ApiResultCode.LOGIN_FAIL);
                 }
             } catch (ProxyRedisException e) {
-                e.printStackTrace();
+                return new ApiResult(ApiResultCode.SYSTEM_ERROR);
             }
 
+
+
+
+        } catch (AuthenticationException e) {
+            return new ApiResult(ApiResultCode.LOGIN_FAIL);
         }
-        return apiResult.setCodeAndMessage(ApiResultCode.LOGIN_FAIL);
+
+        return apiResult;
 
     }
 }

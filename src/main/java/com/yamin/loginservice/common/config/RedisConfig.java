@@ -17,6 +17,12 @@ public class RedisConfig {
     @Autowired
     private RedisTemplate redisTemplate;
 
+
+    /**
+     * 配置redisTemplate序列化的设置
+     *
+     * @return
+     */
     @Bean
     public RedisTemplate<Serializable, Object> stringSerializableRedisTemplate() {
 
