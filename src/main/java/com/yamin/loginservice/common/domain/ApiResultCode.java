@@ -8,6 +8,8 @@ public enum ApiResultCode implements IApiResultCode{
 
     REGISTER_FAIL(-20001,"用户名或密码不能为空"),
     REGISTER_USERNAME_IS_EXIST(-20002,"用户名已存在，请重新输入"),
+
+    LOGOUT_FAIL(-30001,"当前未登录，无法进行此操作"),
     SYSTEM_ERROR(-40000,"系统出错"), ;
 
     private Integer code;

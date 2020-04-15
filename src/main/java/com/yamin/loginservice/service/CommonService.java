@@ -10,4 +10,6 @@ public interface CommonService {
     ApiResult loginByPhoneNumber(UserDto userDto);
 
     ApiResult register(UserDto userDto);
+
+    ApiResult logout(String authToken);
 }

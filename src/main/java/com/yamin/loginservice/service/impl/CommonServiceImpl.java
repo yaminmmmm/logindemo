@@ -107,4 +107,13 @@ public class CommonServiceImpl implements CommonService {
 
         return new ApiResult();
     }
+
+    @Override
+    public ApiResult logout(String authToken) {
+        if (authToken == null && authToken.equals("")) {
+            return new ApiResult(ApiResultCode.LOGOUT_FAIL);
+        }
+        redisUtil.remove(authToken);
+        return ApiResult.builder();
+    }
 }

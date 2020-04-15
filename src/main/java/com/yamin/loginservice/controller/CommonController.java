@@ -8,10 +8,7 @@ import com.yamin.loginservice.service.CommonService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api
 @RestController
@@ -38,5 +35,12 @@ public class CommonController {
             return new ApiResult(ApiResultCode.REGISTER_FAIL);
         }
         return commonService.register(userDto);
+    }
+
+
+    @ApiOperation(value = "用户退出登录操作",tags = "退出接口")
+    @GetMapping("/logout")
+    public ApiResult logout(@RequestHeader("AUTH-TOKEN") String authToken){
+        return commonService.logout(authToken);
     }
 }
