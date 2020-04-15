@@ -45,12 +45,12 @@ public class CommonServiceImpl implements CommonService {
 
             //生成唯一识别符与username组成登录认证令牌token
             String uuid = UUID.randomUUID().toString();
-            String loginToken = user.getUsername() + ":" + uuid;
+            String authToken = user.getUsername() + ":" + uuid;
             try {
                 //保存登录状态到redis缓存中，失效时间为一星期
-                boolean result = redisUtil.set(loginToken, user, GlobalAttr.EXPIRE_TIME.ONE_WEEK);
+                boolean result = redisUtil.set(authToken, user, GlobalAttr.EXPIRE_TIME.ONE_WEEK);
                 if (result) {
-                    apiResult.set("token", loginToken);
+                    apiResult.set("AUTH-TOKEN", authToken);
                 } else {
                     apiResult.setCodeAndMessage(ApiResultCode.LOGIN_FAIL);
                 }
