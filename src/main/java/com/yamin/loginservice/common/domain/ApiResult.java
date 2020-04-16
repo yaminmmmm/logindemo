@@ -28,8 +28,8 @@ public class ApiResult {
     }
 
     public ApiResult() {
-        this.code = ApiResultCode.LOGIN_SUCCESS.getCode();
-        this.message = ApiResultCode.LOGIN_SUCCESS.getMessage();
+        this.code = ApiResultCode.SUCCESS.getCode();
+        this.message = ApiResultCode.SUCCESS.getMessage();
     }
 
     public ApiResult(ApiResultCode apiResultCode) {

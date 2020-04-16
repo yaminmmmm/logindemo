@@ -3,6 +3,7 @@ package com.yamin.loginservice.common.interceptors;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yamin.loginservice.common.domain.ApiResultCode;
 import com.yamin.loginservice.common.exceptions.LoginException;
+import com.yamin.loginservice.common.exceptions.ProxyRedisException;
 import com.yamin.loginservice.common.utils.RedisUtil;
 import com.yamin.loginservice.orm.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,26 +20,33 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String authToken = getToken(request);
-        try{
+        try {
+
 
             Object userObject = redisUtil.get(authToken);
             if (userObject == null) {
                 throw new LoginException(ApiResultCode.LOGIN_EXPIRED);
             }
+
             ObjectMapper objectMapper = new ObjectMapper();
-            User user = objectMapper.readValue(objectMapper.writeValueAsString(userObject), User.class);
+            String content = objectMapper.writeValueAsString(userObject);
+            User user = objectMapper.readValue(content, User.class);
+            if (user == null && user.getUsername().equals("")){
+                throw new LoginException("用户未登录");
+            }
+
         } catch (Exception e) {
-            throw new LoginException("权限发生异常"+e.getMessage());
+            throw new LoginException("权限发生异常" + e.getMessage());
         }
 
+        return true;
 
-        return false;
 
     }
 
     private String getToken(HttpServletRequest request) {
         String authToken = request.getHeader("AUTH-TOKEN");
-        if (authToken == null && authToken.equals("")){
+        if (authToken == null && authToken.equals("")) {
             throw new LoginException("登录已失效");
         }
         return authToken;
