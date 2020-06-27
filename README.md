@@ -4,4 +4,5 @@
 
 使用 redis 缓存+ UUID，保存用户的登录状态与信息
 
-使用 swagger2 生成 API 接口文档
+使用 swagger2 生成 API 接口文档（localhost/doc.html）
+
